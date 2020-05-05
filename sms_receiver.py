@@ -37,16 +37,15 @@ def receive_sms():
     global SMSCOL
     # If we can't parse the data, then just shove it in there and let
     parse_funcs = [
-        lambda x: json.loads(x.data.encode('utf-8')), lambda x: dict(x.form), lambda x: list()[4], lambda x: {
-            'message': x.data.encode('utf-8')
+        lambda x: json.loads(x.data.decode('utf-8')), lambda x: dict(x.form), lambda x: list()[4], lambda x: {
+            'message': x.data.decode('utf-8')
         }
     ]
     for pfn in parse_funcs:
-        sms = parse_funcs[-1](request)
         try:
             sms = pfn(request)
             break
-        except:
+        except Exception:
             pass
     received_time = int(datetime.now(tz=timezone.utc).timestamp() * 1000)
     sms['ReceivedTime'] = received_time
